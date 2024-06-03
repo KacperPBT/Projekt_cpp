@@ -189,6 +189,8 @@ class CalculateAV {
                     int count5 = 0;
                     for(k=k; k < 6; k++){                                       // Petla odpowiadajaca za 5 minut
                         m5data minutes5;
+                        minutes5.av_U = 0;
+                        minutes5.av_I = 0;
                         minutes5.m5time = x.dtime;
                         minutes5.m5time.minute = (k + magic) * 5;
                         minutes5.m5time.second = 0;
@@ -209,7 +211,6 @@ class CalculateAV {
                                 break;
                             }
                         }
-                        magic = 0;
                         if (count1 != 0){
                             minutes5.av_U = suma_5m_U/count1;
                             minutes5.av_I = suma_5m_I/count1;
@@ -218,8 +219,11 @@ class CalculateAV {
                         }
 
                         half_hour.data[k] = minutes5;
-                        count5++;
+                        if (minutes5.av_U != 0){
+                            count5+= 1;
+                        }
                     }
+                    magic = 0;
                     if (count5 != 0){
                         half_hour.av_U = suma_30m_U/count5;
                         half_hour.av_I = suma_30m_I/count5;
@@ -241,20 +245,27 @@ class CalculateAV {
         void print(string arg) {
 
             for (int i = 0; i < av_data.size(); i++){
-                hdata hour = av_data[i];
+                cout << endl << av_data[i].htime.year << "." << av_data[i].htime.month << "." << av_data[i].htime.day << " " << av_data[i].htime.hour << ":00:00" << endl << endl << "==========" << endl;;
                 if (arg == "h"){
-                    cout << "U: " << hour.av_U << endl;
-                    cout << "I: " << hour.av_I << endl;
+                    cout << "U: " << av_data[i].av_U << endl;
+                    cout << "I: " << av_data[i].av_I << endl;
+                    cout << "==========" << endl;
                 } else {
                     for (int j = 0; j < 2; j++) {
                         if (arg == "m30"){
-                            cout << "U: " << hour.data[j].av_U << endl;
-                            cout << "I: " << hour.data[j].av_I << endl;
+                            if (av_data[i].data[j].av_U != 0) {
+                                cout << "U: " << av_data[i].data[j].av_U << endl;
+                                cout << "I: " << av_data[i].data[j].av_I << endl;
+                                cout << "==========" << endl;
+                            }
                         } else {
                             for (int k = 0; k < 6; k++) {
                                 if (arg == "m5"){
-                                    cout << "U: " << av_data[i].data[j].data[k].av_U << endl;
-                                    cout << "I: " << av_data[i].data[j].data[k].av_I << endl;
+                                    if (av_data[i].data[j].data[k].av_U != 0) {
+                                        cout << "U: " << av_data[i].data[j].data[k].av_U << endl;
+                                        cout << "I: " << av_data[i].data[j].data[k].av_I << endl;
+                                        cout << "==========" << endl;
+                                    }
                                 }
                             }
                         }
@@ -264,9 +275,13 @@ class CalculateAV {
         }
 };
 //==============================================================================
-int main() {
-    //vector<string> data = getData("data.json");
+int main(int argc, char *argv[]) {
+    if (argc = 3) {
+        if (argv[1] == "-t") {
+            if 
+        }
+    }
     CalculateAV obj;
-    obj.print("m30");
+    obj.print("m5");
     return 0;
 }
