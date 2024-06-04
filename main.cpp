@@ -64,7 +64,6 @@ int strCount(string str, char target) {
 }
 //============================================================================== [3]Waliduje czy linia jest kapletna
 bool validateIn(string str) {
-    //cout << str << endl;
     int x = strCount(str, '{');
     int y = strCount(str, '}');
     if (x==y){
@@ -276,12 +275,14 @@ class CalculateAV {
 };
 //==============================================================================
 int main(int argc, char *argv[]) {
-    if (argc = 3) {
-        if (argv[1] == "-t") {
-            if 
+    if (argc == 3) {
+        string arg[2] = {argv[1], argv[2]};
+        if (arg[0] == "-t") {
+            if (arg[1] == "h" || arg[1] == "m30" || arg[1] == "m5") {
+                CalculateAV obj;
+                obj.print(argv[2]);
+            }
         }
     }
-    CalculateAV obj;
-    obj.print("m5");
     return 0;
 }
