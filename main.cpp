@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <sstream>
 using namespace std;
-//30 odczytow na linijke NIE PRAWDA
 //============================================================================== struktury
 struct mtime{
     int year = 0;
@@ -92,7 +91,7 @@ mdata dataPars(string data) {
     outdata.av_I = stof(data.substr(31,4));
     return outdata;
 }
-//============================================================================== Sprawdza czy czas miesci sie w przedziale
+//============================================================================== [9]Sprawdza czy czas miesci sie w przedziale
 bool checkTimeRange (mtime start_range, mtime end_range, mtime to_check) {
     if (to_check.year >= start_range.year && to_check.year <= end_range.year) {
         if (to_check.month >= start_range.month && to_check.month <= end_range.month) {
@@ -114,8 +113,6 @@ class ParsLine {
     private:
         string line;
     public:
-        //mtime start_time;
-        //mtime end_time;
         int mesurments;
         mdata data[30];
         ParsLine(string line) {
@@ -134,14 +131,14 @@ class ParsLine {
         }
 };
 //============================================================================== [1]
-class CalculateAV {
+class DataMenager {
     public:
         vector<string> data = getData("data.json");                           // Pobrane dane z pliku
         string line;
         string single_data;
         vector<mdata> secound_data;
         vector<hdata> av_data;
-        CalculateAV() {
+        DataMenager() {
             for (int i = 0; i < data.size(); i++) {                           // Wchodzi w petle w ktorej operuje pojedynczymi liniami
                 line = data[i];
                 if (validateIn(line)) {                                       // Sprawdza poprawnosc lini
@@ -155,6 +152,7 @@ class CalculateAV {
             }
             calculate();
         }
+//============================================================================== [8]
         void calculate() {
             int i = 0;
             int j;
@@ -213,24 +211,24 @@ class CalculateAV {
                         if (count1 != 0){
                             minutes5.av_U = suma_5m_U/count1;
                             minutes5.av_I = suma_5m_I/count1;
-                            suma_30m_U += minutes5.av_U;
-                            suma_30m_I += minutes5.av_I;
+                            suma_30m_U += suma_5m_U;
+                            suma_30m_I += suma_5m_I;
+                            count5 += count1;
                         }
 
                         half_hour.data[k] = minutes5;
                         if (minutes5.av_U != 0){
-                            count5+= 1;
+                            
                         }
                     }
                     magic = 0;
                     if (count5 != 0){
                         half_hour.av_U = suma_30m_U/count5;
                         half_hour.av_I = suma_30m_I/count5;
-                        suma_U += half_hour.av_U;
-                        suma_I += half_hour.av_I;
+                        suma_U += suma_30m_U;
+                        suma_I += suma_30m_I;
+                        count30 += count5;
                     }
-
-                    count30++;
                     hour.data[j] = half_hour;
                 }
                 if (count30 != 0){
@@ -240,7 +238,7 @@ class CalculateAV {
                 av_data.push_back(hour);
             }
         }
-
+//============================================================================== [10]
         void print(string arg) {
 
             for (int i = 0; i < av_data.size(); i++){
@@ -279,7 +277,7 @@ int main(int argc, char *argv[]) {
         string arg[2] = {argv[1], argv[2]};
         if (arg[0] == "-t") {
             if (arg[1] == "h" || arg[1] == "m30" || arg[1] == "m5") {
-                CalculateAV obj;
+                DataMenager obj;
                 obj.print(argv[2]);
             }
         }
